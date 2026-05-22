@@ -32,7 +32,7 @@ name so dashboards can resolve coordinates to a place name.
 | `aromeweather.py`          | The polling script.                                  |
 | `aromeweather.sh`          | Wrapper that activates the Python env and execs `aromeweather.py`. |
 | `aromeweather.service.in`  | systemd unit template (`@HOME@`, `@USER@`, `@LOCATIONS@` are filled in by the installer). |
-| `locations.conf`           | List of `lat,lon  name` pairs to poll.               |
+| `locations.conf.example`   | Template list of `lat,lon  name` pairs (the installer copies this to `locations.conf` on first run; the copy is gitignored and never overwritten afterwards). |
 | `install.sh`               | End-to-end installer (env, files, InfluxDB, systemd). |
 
 ## Requirements
@@ -70,11 +70,17 @@ The Python script honours the same `AROME_INFLUX_HOST`,
 
 ## Adding a location
 
-1. Append a line to `locations.conf` (`lat,lon  Name`).
+1. Append a line to `locations.conf` (`lat,lon  Name`). On a fresh
+   checkout this file is created from `locations.conf.example` on the
+   first installer run.
 2. Re-run `./install.sh`.
 
 The installer regenerates the systemd unit's `ExecStart`, re-inserts the
-location marker into InfluxDB, and restarts the service.
+location markers into InfluxDB, and restarts the service.
+
+Your `locations.conf` is gitignored and is **not** overwritten by
+subsequent installer runs or by `git pull`, so it is safe to maintain
+the production list in-place.
 
 ## Backfilling history
 

@@ -3,3 +3,7 @@ __pycache__/
 *.pyo
 .venv/
 aromeweather.service
+
+# Local, per-deployment configuration -- created by install.sh from
+# locations.conf.example and never overwritten on subsequent runs.
+locations.conf

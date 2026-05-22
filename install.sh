@@ -15,7 +15,19 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LOCATIONS_FILE="${SCRIPT_DIR}/locations.conf"
+LOCATIONS_TEMPLATE="${SCRIPT_DIR}/locations.conf.example"
 SERVICE_IN="${SCRIPT_DIR}/aromeweather.service.in"
+
+# Bootstrap locations.conf from the template on first run. The file is
+# gitignored, so it survives 'git pull' and subsequent installer runs.
+if [ ! -f "$LOCATIONS_FILE" ]; then
+    if [ ! -f "$LOCATIONS_TEMPLATE" ]; then
+        echo "Neither $LOCATIONS_FILE nor $LOCATIONS_TEMPLATE exists." >&2
+        exit 1
+    fi
+    echo "Creating $LOCATIONS_FILE from template (edit it and re-run to customise)."
+    cp "$LOCATIONS_TEMPLATE" "$LOCATIONS_FILE"
+fi
 
 INFLUX_HOST="${AROME_INFLUX_HOST:-localhost}"
 INFLUX_DB="${AROME_INFLUX_DB:-aromeweather}"

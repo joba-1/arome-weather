@@ -4,8 +4,10 @@
 # so dashboards (e.g. Grafana) can resolve lat/lon back to a human name.
 # Coordinates are rounded to 2 decimals by the script (~1 km resolution).
 #
-# Replace the examples below with the locations you care about, then run
-# ./install.sh to (re)deploy.
+# This is the template. install.sh copies it to locations.conf on the
+# first run only; subsequent runs leave your edited locations.conf alone
+# (and locations.conf is gitignored, so 'git pull' won't clobber it).
+# Edit locations.conf -- not this file -- then re-run ./install.sh.
 
 48.78,9.18    Stuttgart
 52.52,13.40   Berlin
