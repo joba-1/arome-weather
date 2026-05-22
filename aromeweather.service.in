@@ -1,0 +1,13 @@
+[Unit]
+Description=load latest arome and arpege weather forecasts into an influxdb
+After=network.target influxdb.service
+
+[Service]
+Type=simple
+ExecStart=@HOME@/bin/aromeweather.sh @LOCATIONS@
+User=@USER@
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target
