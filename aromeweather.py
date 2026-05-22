@@ -102,8 +102,12 @@ def put_table_influx(pos, name, table):
     return count
 
 
-def put_weather_influx(json_weather):
-    pos = (json_weather["latitude"], json_weather["longitude"])
+def put_weather_influx(pos, json_weather):
+    # Tag rows with the *requested* lat/lon (pos), not the snapped grid
+    # coordinate the API returns. This keeps the hourly/daily tags in
+    # sync with the `location` measurement; otherwise locations outside
+    # the AROME fine grid (e.g. anywhere ARPEGE-only) end up tagged at
+    # a coarse-grid cell that doesn't match the location marker.
     h = put_table_influx(pos, "hourly", json_weather["hourly"])
     d = put_table_influx(pos, "daily", json_weather["daily"])
     print(f"InfluxDB updated {h} hours and {d} days for {pos}")
@@ -114,14 +118,14 @@ def main():
     if one_shot:
         for lat, lon in locs:
             json_weather = get_weather_meteofrance(lat, lon, days=92)
-            put_weather_influx(json_weather)
+            put_weather_influx((lat, lon), json_weather)
         return
 
     while True:
         try:
             for lat, lon in locs:
                 json_weather = get_weather_meteofrance(lat, lon)
-                put_weather_influx(json_weather)
+                put_weather_influx((lat, lon), json_weather)
         except Exception as e:
             print(e)
         time.sleep(3600)
